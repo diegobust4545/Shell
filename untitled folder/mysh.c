@@ -31,7 +31,6 @@ int main(int argc, char **argv)
             printf("mysh> ");
         }
 
-
         // if(strstr(buffer, ">")){
 
         //     tokenFun[0] = strtok(buffer, ">");
@@ -45,14 +44,11 @@ int main(int argc, char **argv)
         //     tokenFun[1] = strtok(NULL, "\n");
         //     if(fork() == 0){
         //         file = open(tokenFun[1], O_WRONLY| O_CREAT, S_IRUSR |  S_IWUSR|);
-        //         (file, STDOUT_FILENO);
+        //         (gfile, STDOUT_FILENO);
         //         close(file);
         //         tokenFun[1] = NULL;
         //         execvp(tokenFun[0], token); 
         //     }
-            
-
-        // }
 
         fgets(buffer, BUFFERSIZE, file);
         token = strtok(&buffer[0], " ");
