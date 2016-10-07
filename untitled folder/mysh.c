@@ -17,7 +17,6 @@ void error_message(){
     write(STDERR_FILENO, error_message, strlen(error_message));
 }
 
-
 int main(int argc, char **argv)
 { 
     FILE *file = stdin;  
@@ -31,6 +30,29 @@ int main(int argc, char **argv)
         {  
             printf("mysh> ");
         }
+
+
+        // if(strstr(buffer, ">")){
+
+        //     tokenFun[0] = strtok(buffer, ">");
+        //     tokenFun[1] = strtok(NULL, " ");
+        //     if(!strstr(tokenFun[1], "\n") || strstr(tokenFun[1], ">"))
+        //     {
+        //         error_message();
+        //         continue;
+        //     }
+        //     tokenFun[0] = strtok(buffer, " ");
+        //     tokenFun[1] = strtok(NULL, "\n");
+        //     if(fork() == 0){
+        //         file = open(tokenFun[1], O_WRONLY| O_CREAT, S_IRUSR |  S_IWUSR|);
+        //         (file, STDOUT_FILENO);
+        //         close(file);
+        //         tokenFun[1] = NULL;
+        //         execvp(tokenFun[0], token); 
+        //     }
+            
+
+        // }
 
         fgets(buffer, BUFFERSIZE, file);
         token = strtok(&buffer[0], " ");
@@ -53,10 +75,8 @@ int main(int argc, char **argv)
         {
             tokenFun[i - 2] = strtok(tokenFun[i - 2], "\n"); 
         }
-
         if(strcmp("exit", tokenFun[0]) == 0)
         {
-            printf("Exit\n");
             if(boo){
                 fclose(file);
             }
@@ -68,15 +88,12 @@ int main(int argc, char **argv)
             if(pid == 0)
             {
                 execvp(tokenFun[0], tokenFun);
+                // printf("\n");
             }
-            // if(strstr(">", tokenFun[0])==0)
-            // {
-            //     printf("waka flocka flame\n");
-            // }
         }
         else if(strcmp("wait", tokenFun[0])==0)
         {
-            printf("Run wait!\n");
+            printf("wait\n");
         }
         else if(strcmp("pwd", tokenFun[0])==0)
         {     
@@ -96,10 +113,8 @@ int main(int argc, char **argv)
                 chdir(tokenFun[1]);
             }
         }
-         // && (strcmp(filename[length - 1], "p")) == 0 && (strcmp(filename[length], "y")) == 0)
         else if(strcmp(".py", &filename[length-4]) == 0 || tokenFun[1] != 0)
         {    
-            // printf("%s\n", &filename[length-2]);
             int pid2 = fork();
             if(pid2 == 0)
             {
@@ -115,8 +130,6 @@ int main(int argc, char **argv)
         {
             error_message();
         }
-        
-        i = 0;    
     }
     return 0;
 }
