@@ -1,28 +1,38 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
+#include <unistd.h>
+
 #define BUFFERSIZE 512
 
-char *token;
-char *tokenFun[512];
-char input[512];
-
+int i = 0;
+int boo = 0;
 char buffer[BUFFERSIZE];
 char *filename;
+char *token;
+char *tokenFun[512];
 
-int exitComp;
-int cdComp;
-int waitComp;
-int pwdComp;
-int i = 0;
+void error_message(){
+    char error_message[30] = "An error has occurred\n";
+    write(STDERR_FILENO, error_message, strlen(error_message));
+}
 
 
-int main()
-{   
+int main(int argc, char **argv)
+{ 
+    FILE *file = stdin;  
+    if(argv[1]){
+        boo = 1;
+        file = fopen(argv[1],"r");
+    }
     for(;;){
         i = 0;
-        printf("mysh> ");
-        fgets(buffer, BUFFERSIZE, stdin);
+        if(!boo)
+        {  
+            printf("mysh> ");
+        }
+
+        fgets(buffer, BUFFERSIZE, file);
         token = strtok(&buffer[0], " ");
         tokenFun[0] = token;
         i++;    
@@ -44,60 +54,25 @@ int main()
             tokenFun[i - 2] = strtok(tokenFun[i - 2], "\n"); 
         }
 
-        if(strcmp("exit", tokenFun[0])==0)
+        if(strcmp("exit", tokenFun[0]) == 0)
         {
             printf("Exit\n");
+            if(boo){
+                fclose(file);
+            }
             exit(0);
         }
-        else if(strcmp("batch", tokenFun[0])==0)
-        {
-            for(;;)
-            {
-                i = 0;
-                printf("> ");
-                fgets(buffer, BUFFERSIZE, stdin);
-                token = strtok(&buffer[0], " ");
-                tokenFun[0] = token;
-                if(strcmp("exit\n", tokenFun[0])==0)
-                {
-                    break; 
-                }
-                else if(strcmp("\n", tokenFun[0])==0)
-                {
-                    break; 
-                }
-
-                while(token != NULL){
-                    token = strtok(NULL, " ");
-                }
-                if(strcmp("\n", tokenFun[0])==0)
-                {
-                    continue;
-                }
-
-                else
-                {
-                    tokenFun[i - 2] = strtok(tokenFun[i - 2], "\n"); 
-                }
-                i++;
-            } 
-        }
-        else if(strcmp("cd", tokenFun[0])==0)
-        {
-            if(tokenFun[1] == NULL){
-                chdir(getenv("HOME"));
-            }
-            else{
-                chdir(tokenFun[1]);
-            }
-        }
-        else if(strcmp("ls", tokenFun[0])==0 || strstr(">",tokenFun[0])==0)
+         else if(strcmp("ls", tokenFun[0])==0)
         {
             int pid = fork();
             if(pid == 0)
             {
                 execvp(tokenFun[0], tokenFun);
             }
+            // if(strstr(">", tokenFun[0])==0)
+            // {
+            //     printf("waka flocka flame\n");
+            // }
         }
         else if(strcmp("wait", tokenFun[0])==0)
         {
@@ -111,7 +86,15 @@ int main()
                 getcwd(current, sizeof(current));
                 printf("mysh> %s\n", current);
             }
-
+        }
+        else if(strcmp("cd", tokenFun[0])==0)
+        {
+            if(tokenFun[1] == NULL){
+                chdir(getenv("HOME"));
+            }
+            else{
+                chdir(tokenFun[1]);
+            }
         }
          // && (strcmp(filename[length - 1], "p")) == 0 && (strcmp(filename[length], "y")) == 0)
         else if(strcmp(".py", &filename[length-4]) == 0 || tokenFun[1] != 0)
@@ -130,14 +113,10 @@ int main()
         }
         else
         {
-            printf("An error has occurred\n");
+            error_message();
         }
         
         i = 0;    
     }
     return 0;
 }
-
-
-
-

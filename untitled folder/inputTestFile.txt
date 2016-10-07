@@ -1,0 +1,10 @@
+pwd
+ls
+pwd
+hello.py
+hello.py test
+ls
+pwd
+cd
+ls
+exit
